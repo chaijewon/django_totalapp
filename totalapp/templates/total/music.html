@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style type="text/css">
+        .row {
+            margin:0px auto;
+            width:1200px
+        }
+        h1{
+            text-align:center
+        }
+    </style>
+    <script type="text/javascript" src="http://code.jquery.com/jquery.js"></script>
+    <script type="text/javascript">
+        $(function(){
+             $('#keyword').keyup(function(){
+                  let k=$(this).val()
+                  $('#user-table > tbody > tr').hide()
+                  let temp=$('#user-table > tbody > tr > td:nth-child(5n+3):contains("'+k+'")')
+                  $(temp).parent().show()
+             })
+        });
+    </script>
+</head>
+<body>
+      {% include 'total/menu.html' %}
+     <div style="height:30px"></div>
+     <div class="container">
+         <div class="row">
+             <h1>음악목록</h1>
+             <table class="table">
+                 <tr>
+                     <td>
+                         <input type="text" size="20" id="keyword" placeholder="노래검색" class="input-sm">
+                     </td>
+                 </tr>
+             </table>
+             <table class="table table-striped" id="user-table">
+                 <thead>
+                    <tr class="danger">
+                        <th class="text-center">순위</th>
+                        <th class="text-center"></th>
+                        <th class="text-center">곡명</th>
+                        <th class="text-center">가수명</th>
+                        <th class="text-center">앨범</th>
+                    </tr>
+                 </thead>
+                 <tbody>
+                    {% for row in md %}
+                       <tr>
+                           <td class="text-center">{{row.no}}</td>
+                           <td class="text-center"><img src="{{row.poster}}" width="35" height="35"></td>
+                           <td>{{row.title}}</td>
+                           <td>{{row.singer}}</td>
+                           <td>{{row.album}}</td>
+                       </tr>
+                    {% endfor %}
+                 </tbody>
+                 <tfoot>
+                    <tr>
+                        <td colspan="5" class="text-center">
+                            <a href="../music/?page=1" class="btn btn-sm btn-danger">1~50위</a>
+                            <a href="../music/?page=2" class="btn btn-sm btn-info">51~100위</a>
+                            <a href="../music/?page=3" class="btn btn-sm btn-success">101~150위</a>
+                            <a href="../music/?page=4" class="btn btn-sm btn-warning">151~200위</a>
+                        </td>
+                    </tr>
+                 </tfoot>
+             </table>
+         </div>
+     </div>
+</body>
+</html>
