@@ -234,6 +234,76 @@ def movie_detail(mno):
 # java => 데이터형 문자열 변환 (String.valueOf() == str())
 #chef_totalpage('만개의레시피')
 #chef_count('만개의레시피')
-chef_list('만개의레시피',1)
+#chef_list('만개의레시피',1)
+# 맛집관련
+'''
+NO      NOT NULL NUMBER        
+TITLE   NOT NULL VARCHAR2(100) 
+SUBJECT NOT NULL VARCHAR2(100) 
+POSTER  NOT NULL VARCHAR2(260) 
+'''
+# md[11].read() 오라클의 데이터형이 clob
+def food_category(start,end):
+    conn=getConnection()
+    cursor=conn.cursor()
+    sql=f"""
+            SELECT no,title,subject,poster 
+            FROM food_category
+            WHERE no BETWEEN {start} AND {end}
+          """
+    cursor.execute(sql)
+    food_data=cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return food_data
+
+
+'''
+NO      NOT NULL NUMBER         
+CNO              NUMBER         
+POSTER  NOT NULL VARCHAR2(4000) 
+TITLE   NOT NULL VARCHAR2(200)  
+SCORE   NOT NULL NUMBER(2,1)    
+ADDRESS NOT NULL VARCHAR2(300)  
+TEL     NOT NULL VARCHAR2(30)   
+TYPE    NOT NULL VARCHAR2(100)  
+PRICE   NOT NULL VARCHAR2(50)   
+PARKING          VARCHAR2(500)  
+TIME             VARCHAR2(500)  
+MENU             VARCHAR2(2000) 
+GOOD             NUMBER         
+SOSO             NUMBER         
+BAD              NUMBER        
+'''
+# Object_all()
+def food_list(cno):
+    conn=getConnection()
+    cursor=conn.cursor()
+    sql=f"""
+            SELECT no,poster,title,address,tel
+            FROM food_house
+            WHERE cno={cno}
+          """
+    cursor.execute(sql)
+    food_data=cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return food_data
+
+def food_detail(no):
+    conn=getConnection()
+    cursor=conn.cursor()
+    sql=f"""
+             SELECT poster,title,score,address,tel,type,price,parking,time,menu,good,soso,bad
+             FROM food_house
+             WHERE no={no}
+          """
+    cursor.execute(sql)
+    detail_data=cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return detail_data
+
+
 
 

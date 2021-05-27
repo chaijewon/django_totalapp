@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style type="text/css">
+        .row {
+            margin:0px auto;
+            width:900px
+        }
+    </style>
+</head>
+<body>
+     {% include 'total/menu.html' %}
+     <div style="height:30px"></div>
+     <div class="container">
+         <div class="row">
+             <table class="table">
+                 <tr>
+                     {% for i in poster %}
+                     <td class="text-center">
+                         <img src="{{i}}" width="100%">
+                     </td>
+                     {% endfor %}
+                 </tr>
+             </table>
+             <table class="table">
+                 <tr>
+                     <td colspan="2">
+                         <h3>{{title}}&nbsp;<span style="color:orange">{{score}}</span></h3>
+                     </td>
+                 </tr>
+                 <tr>
+                     <td width="10%" class="text-right">주소</td>
+                     <td width="90%">{{address}}</td>
+                 </tr>
+                 <tr>
+                     <td width="10%" class="text-right">전화</td>
+                     <td width="90%">{{tel}}</td>
+                 </tr>
+                 <tr>
+                     <td width="10%" class="text-right">음식종류</td>
+                     <td width="90%">{{type}}</td>
+                 </tr>
+                 <tr>
+                     <td width="10%" class="text-right">가격대</td>
+                     <td width="90%">{{price}}</td>
+                 </tr>
+                 <tr>
+                     <td width="10%" class="text-right">주차</td>
+                     <td width="90%">{{parking}}</td>
+                 </tr>
+                 <tr>
+                     <td width="10%" class="text-right">영업시간</td>
+                     <td width="90%">{{time}}</td>
+                 </tr>
+                 <tr>
+                     <td width="10%" class="text-right">메뉴</td>
+                     <td width="90%">
+                         {% if menu != 'none' %}
+                            <ul style="list-style:none">
+                            {% for m in menu %}
+                                <li>{{m}}</li>
+                            {% endfor %}
+                            </ul>
+                         {% else %}
+                             <font color="red">등록된 메뉴가 없습니다</font>
+                         {% endif %}
+                     </td>
+                 </tr>
+                 <tr>
+                     <td colspan="2" class="text-right">
+                         <a href="javascript:history.back()" class="btn btn-sm btn-danger">목록</a>
+                     </td>
+                 </tr>
+             </table>
+             <table class="table">
+                 <tr>
+                     <td class="text-right">
+                         맛있다({{good}})&nbsp;괜찮다({{soso}})&nbsp;별로({{bad}})
+                     </td>
+                 </tr>
+             </table>
+         </div>
+         <div class="row">
+             <table class="table">
+                 <tr>
+                     <td>
+                         <textarea cols="110" rows="5" style="float:left"></textarea>
+                         <input type="button" value="댓글쓰기" class="btn btn-sm btn-primary" style="height:108px;float:left">
+                     </td>
+                 </tr>
+             </table>
+         </div>
+     </div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+

@@ -61,9 +61,6 @@ def music(request):
     print(md)
     return render(request,'total/music.html',{"curpage":curpage,"totalpage":4,"md":md})
 
-def food(request):
-    return render(request,'total/food.html')
-
 def recipe(request):
     # 페이지를 받는다 = 없는 경우에 except를 수행 => curpage=1
     try:
@@ -134,6 +131,81 @@ def chef(request):
     data = {"count": count, "curpage": curpage, "totalpage": totalpage, "startPage": startPage, "endPage": endPage,
               "rd": rd, "range": range(startPage, endPage + 1),"chef":chef_name}
     return render(request,'total/chef.html',data)
+
+#맛집
+def food(request):
+    #no,title,subject,poster
+    fd1=models.food_category(1,12)
+    #믿고 보는 맛집 리스트
+    f1=[]
+    for ff in fd1:
+        fd_data1={"no":ff[0],"title":ff[1],"subject":ff[2],"poster":ff[3]}
+        f1.append(fd_data1)
+
+    #지역별 인기 맛집
+    f2=[]
+    fd2=models.food_category(13,18)
+    for ff in fd2:
+         fd_data2 = {"no": ff[0], "title": ff[1], "subject": ff[2], "poster": ff[3]}
+         f2.append(fd_data2)
+
+    #메뉴별 인기 맛집
+    f3=[]
+    fd3=models.food_category(19,30)
+    for ff in fd3:
+         fd_data3 = {"no": ff[0], "title": ff[1], "subject": ff[2], "poster": ff[3]}
+         f3.append(fd_data3)
+
+    return render(request,'total/food.html',{"fd1":f1,"fd2":f2,"fd3":f3})
+
+def food_list(request):
+      cno=request.GET['cno']
+      #데이터베이스 연동  no,poster,title,address,tel
+      food_data=models.food_list(int(cno))
+      fd=[]
+      for ff in food_data:
+          ss=ff[1].split("^")
+          data={"no":ff[0],"title":ff[2],"address":ff[3],"tel":ff[4],"poster":ss[0]}
+          fd.append(data)
+      return render(request,'total/food_list.html',{"fd":fd})
+'''
+  1. RequestMapping(GetMapping,PostMapping) => urls.py  (URI,호출할 함수 지정)
+  2. views.py => 함수제작 (요청값을 받아서 데이터베이스 연동후에 결과값을 html로 전송)
+  3. models.py => DAO
+  4. Templates : HTML,JSP  => {{값}} => {{}}:Vue.js == {{}}:AngularJS == {}:React.JS
+     IT 
+     = 퍼블리셔  : HTML,CSS (화면 디자인)
+     =================================================
+     = Front 개발자 : JavaScript (NodeJS,VueJS,ReactJS,AngularJS....) TypeScript
+     = Back 개발자 : Spring , MyBtais , Java , 파이썬 ... (AI) 
+     =================================================(+) Full Stack
+     = DataBase 개발자 : 요구사항 분석, 설계 , 테이블 제작 ....
+'''
+def food_detail(request):
+      no=request.GET['no']
+      #db연동
+      detail_data=models.food_detail(int(no))
+      # poster,title,score,address,tel,type,price,parking,time,menu,good,soso,bad
+      posters=detail_data[0].split("^")
+      print(posters)
+      menu=detail_data[9].split("원")
+      address=detail_data[3].split("지")
+      dd={
+               "poster":posters,
+               "title":detail_data[1],
+               "score":detail_data[2],
+               "address":address[0],
+               "tel":detail_data[4],
+               "type":detail_data[5],
+               "price":detail_data[6],
+               "parking":detail_data[7],
+               "time":detail_data[8],
+               "menu":menu,
+               "good":detail_data[10],
+               "soso":detail_data[11],
+               "bad":detail_data[12]
+           }
+      return render(request,'total/food_detail.html',dd)
 
 
 

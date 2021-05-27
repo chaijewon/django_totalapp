@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style type="text/css">
+        .row {
+            margin:0px auto;
+            width:900px
+        }
+    </style>
+</head>
+<body>
+     {% include 'total/menu.html' %}
+     <div style="height:30px"></div>
+     <div class="container-fluid">
+         <div class="row">
+             <table class="table">
+                 <tr>
+                     <td>
+                         {% for ff in fd %}
+                         <table class="table">
+                             <tr>
+                                 <td width="40%" rowspan="3" valign="top" class="text-center">
+                                     <a href="/total/food_detail/?no={{ff.no}}"><img src="{{ff.poster}}" style="width:300px;height:200px"></a>
+                                 </td>
+                                 <td width="60%"><h3><a href="/total/food_detail/?no={{ff.no}}">{{ff.title}}</a></h3></td>
+                             </tr>
+                             <tr>
+                                 <td width="60%">{{ff.address}}</td>
+                             </tr>
+                             <tr>
+                                 <td width="60%">{{ff.tel}}</td>
+                             </tr>
+                         </table>
+                         {% endfor %}
+                     </td>
+                 </tr>
+             </table>
+         </div>
+     </div>
+</body>
+</html>
