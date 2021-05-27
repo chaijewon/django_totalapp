@@ -10,17 +10,31 @@
         .row {
             margin:0px auto;
         }
-        h1{
-            text-align:center
-        }
     </style>
 </head>
 <body>
-    {% include 'total/menu.html' %}
+     {% include 'total/menu.html' %}
      <div style="height:30px"></div>
      <div class="container">
          <div class="row">
-             <h1>맛집목록</h1>
+             <h3>총 <span style="font-size:25px;color:red">{{count}}</span>개의 맛있는 레시피가 있습니다.</h3>
+         </div>
+         <hr>
+         <div class="row">
+             {% for recipe in rd %}
+              <div class="col-md-3">
+                <div class="panel panel-primary">
+                  <div class="panel-heading">{{recipe.title}}</div>
+                  <div class="panel-body">
+                       <div class="thumbnail">
+                          <a href="#">
+                            <img src="{{recipe.poster}}" title="{{recipe.title}}" style="width:100%">
+                          </a>
+                        </div>
+                  </div>
+                </div>
+              </div>
+             {% endfor %}
          </div>
      </div>
 </body>

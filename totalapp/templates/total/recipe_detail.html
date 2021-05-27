@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style type="text/css">
+        .row {
+            margin:0px auto;
+            width:820px;
+        }
+    </style>
+</head>
+<body>
+     {% include 'total/menu.html' %}
+     <div style="height:30px"></div>
+     <div class="container">
+         <div class="row">
+             <table class="table">
+                 <tr>
+                     <td class="text-center" colspan="3">
+                         <img src="{{poster}}" style="width:800px;height:350px" class="img-rounded">
+                     </td>
+                 </tr>
+                 <tr>
+                     <td class="text-center" colspan="3"><h3>{{title}}</h3></td>
+                 </tr>
+                 <tr>
+                     <td class="text-center" colspan="3">"{{content}}"</td>
+                 </tr>
+                 <tr>
+                     <td class="text-center">{{info1}}</td>
+                     <td class="text-center">{{info2}}</td>
+                     <td class="text-center">{{info3}}</td>
+                 </tr>
+                 <tr>
+                     <td colspan="3">
+                         <p><span style="color:blue;font-weight:bold">레시피 만드는 방법</span></p>
+                         {% for s in foodmake %}
+                           {{s}}<br>
+                         {% endfor %}
+                     </td>
+                 </tr>
+                 <tr>
+                     <td colspan="2">
+                         <img src="{{chef_poster}}" style="width:30px;height:30px">&nbsp;{{chef}}
+                         <br>
+                         <sub>{{chef_info}}</sub>
+                     </td>
+                     <td class="text-right">
+                         <a href="javascript:history.back()" class="btn btn-lg btn-primary">목록</a>
+                     </td>
+                 </tr>
+             </table>
+         </div>
+     </div>
+</body>
+</html>

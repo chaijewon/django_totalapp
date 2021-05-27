@@ -17,18 +17,18 @@
      <div style="height:30px"></div>
      <div class="container">
          <div class="row">
-             <h3>총 <span style="font-size:25px;color:red">{{count}}</span>개의 맛있는 레시피가 있습니다.</h3>
+             <h3>&lt;{{chef}}&gt; 쉐프가 만든 레시피는 총 <span style="font-size:25px;color:red">{{count}}</span>개의 있습니다.</h3>
          </div>
          <hr>
          <div class="row">
              {% for recipe in rd %}
               <div class="col-md-3">
                 <div class="panel panel-success">
-                  <div class="panel-heading"><a href="../chef/?chef={{recipe.chef}}">{{recipe.chef}}</a></div>
+                  <div class="panel-heading"><a href="../recipe_detail/?no={{recipe.no}}">{{recipe.title|slice:":17"}}</a></div>
                   <div class="panel-body">
                        <div class="thumbnail">
                           <a href="../recipe_detail/?no={{recipe.no}}">
-                            <img src="{{recipe.poster}}" title="{{recipe.title}}" style="width:100%">
+                            <img src="{{recipe.poster}}" title="{{recipe.chef}}" style="width:100%">
                           </a>
                         </div>
                   </div>
@@ -40,17 +40,17 @@
              <div class="text-center">
                  <ul class="pagination">
                      {% if startPage > 1 %}
-                     <li><a href="../recipe/?page={{startPage|add:-1}}">&lt;</a></li>
+                     <li><a href="/total/chef/?chef={{chef}}&page={{startPage|add:-1}}">&lt;</a></li>
                      {% endif %}
                      {% for i in range %}
                      {% if i == curpage %}
-                     <li class="active"><a href="../recipe/?page={{i}}">{{i}}</a></li>
+                     <li class="active"><a href="/total/chef/?chef={{chef}}&page={{i}}">{{i}}</a></li>
                      {% else %}
-                     <li><a href="../recipe/?page={{i}}">{{i}}</a></li>
+                     <li><a href="/total/chef/?chef={{chef}}&page={{i}}">{{i}}</a></li>
                      {% endif %}
                      {% endfor %}
                      {% if endPage < totalpage %}
-                     <li><a href="../recipe/?page={{endPage|add:1}}">&gt;</a></li>
+                     <li><a href="/total/chef/?chef={{chef}}&page={{endPage|add:1}}">&gt;</a></li>
                      {% endif %}
                 </ul>
              </div>

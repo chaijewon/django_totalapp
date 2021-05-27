@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style type="text/css">
+        .row {
+            margin:0px auto;
+            width:1200px;
+        }
+    </style>
+</head>
+<body>
+     {% include 'total/menu.html' %}
+     <div style="height:30px"></div>
+     <div class="container">
+         <div class="row">
+             <div class="col-sm-9">
+                 <table class="table">
+                  <tr>
+                    <td class="text-center">
+                      <iframe src="http://youtube.com/embed/{{key}}" style="width:800px;height:350px"></iframe>
+                    </td>
+                  </tr>
+               </table>
+                 <table class="table">
+                     <tr>
+                         <td width="30%" valign="top" class="text-center" rowspan="8">
+                             <img src="{{poster}}" width="100%">
+                         </td>
+                         <td colspan="2" class="text-center"><b>{{title}}</b></td>
+                     </tr>
+                     <tr>
+                         <td width="10%" class="text-right">장르</td>
+                         <td width="60%">{{genre}}</td>
+                     </tr>
+                     <tr>
+                         <td width="10%" class="text-right">등급</td>
+                         <td width="60%">{{grade}}</td>
+                     </tr>
+                     <tr>
+                         <td width="10%" class="text-right">국가</td>
+                         <td width="60%">{{genre}}</td>
+                     </tr>
+                     <tr>
+                         <td width="10%" class="text-right">평점</td>
+                         <td width="60%">{{score}}</td>
+                     </tr>
+                     <tr>
+                         <td width="10%" class="text-right">시간</td>
+                         <td width="60%">{{time}}</td>
+                     </tr>
+                     <tr>
+                         <td width="10%" class="text-right">누적관객</td>
+                         <td width="60%">{{showuser}}</td>
+                     </tr>
+                     <tr>
+                         <td width="10%" class="text-right">박스오피스</td>
+                         <td width="60%">{{boxoffice}}</td>
+                     </tr>
+                     <tr>
+                         <td colspan="3">
+                             {{story|slice:":200"}}
+                         </td>
+                     </tr>
+                     <tr>
+                         <td colspan="3" class="text-right">
+                             <a href="javascript:history.back()" class="btn btn-sm btn-danger">목록</a>
+                         </td>
+                     </tr>
+                 </table>
+             </div>
+             <div class="col-sm-3">
+
+             </div>
+         </div>
+     </div>
+</body>
+</html>
+
+
+
+
+
+
+
+

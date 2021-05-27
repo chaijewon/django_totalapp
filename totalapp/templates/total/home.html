@@ -24,10 +24,10 @@
              {% for movie in md %}
               <div class="col-md-3">
                 <div class="panel panel-primary">
-                  <div class="panel-heading">{{movie.title}}</div>
+                  <div class="panel-heading">{{movie.title|slice:":17"}}</div>
                   <div class="panel-body">
                        <div class="thumbnail">
-                          <a href="#">
+                          <a href="movie_detail/?mno={{movie.mno}}">
                             <img src="{{movie.poster}}" title="{{movie.title}}" style="width:100%">
                           </a>
                         </div>
@@ -35,6 +35,25 @@
                 </div>
                   </div>
              {% endfor %}
+         </div>
+         <div class="row">
+             <div class="text-center">
+                 <ul class="pagination">
+                     {% if startPage > 1 %}
+                     <li><a href="../total/?page={{startPage|add:-1}}">&lt;</a></li>
+                     {% endif %}
+                     {% for i in range %}
+                        {% if i == curpage %}
+                          <li class="active"><a href="../total/?page={{i}}">{{i}}</a></li>
+                         {% else %}
+                          <li><a href="../total/?page={{i}}">{{i}}</a></li>
+                         {% endif %}
+                     {% endfor %}
+                     {% if endPage < totalpage %}
+                     <li><a href="../total/?page={{endPage|add:1}}">&gt;</a></li>
+                     {% endif %}
+                    </ul>
+             </div>
          </div>
      </div>
 </body>
