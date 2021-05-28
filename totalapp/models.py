@@ -304,6 +304,230 @@ def food_detail(no):
     conn.close()
     return detail_data
 
+#답변형게시판
+def board_list(page):
+    conn=getConnection()
+    cursor=conn.cursor()
+    rowSize=10
+    start=(rowSize*page)-(rowSize-1)
+    end=rowSize*page
+    #sql문장 만들기
+    sql=f"""
+           SELECT no,subject,name,TO_CHAR(regdate,'YYYY-MM-DD'),hit,group_tab,num
+           FROM (SELECT no,subject,name,regdate,hit,group_tab,rownum as num
+           FROM (SELECT no,subject,name,regdate,hit,group_tab
+           FROM django_board ORDER BY group_id DESC , group_step ASC))
+           WHERE num BETWEEN {start} AND {end}
+          """
+    #문장 실행
+    cursor.execute(sql)
+    #실행 데이터 받기
+    board_data=cursor.fetchall()
+    cursor.close()
+    conn.close()
+    return board_data
+
+#총페이지 읽기
+def board_totalpage():
+    conn=getConnection()
+    cursor=conn.cursor()
+    sql="SELECT CEIL(COUNT(*)/10.0) FROM django_board"
+    cursor.execute(sql)
+    total=cursor.fetchone()
+    cursor.close()
+    conn.close()
+    return total[0]
+
+#데이터 추가
+def board_insert(board_vo):
+    conn=getConnection()
+    cursor=conn.cursor()
+    sql=f"""
+            INSERT INTO django_board(no,name,subject,content,pwd,group_id) 
+            VALUES(py_no_seq.nextval,:1,:2,:3,:4,(SELECT NVL(MAX(group_id)+1,1) FROM django_board))
+          """
+    cursor.execute(sql,board_vo)
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+#상세보기
+def board_detail(no):
+    conn=getConnection()
+    cursor=conn.cursor()
+    sql=f"""
+             UPDATE django_board SET
+             hit=hit+1
+             WHERE no={no}
+          """
+    cursor.execute(sql)
+    conn.commit()
+    cursor.close()
+
+    cursor=conn.cursor()
+    sql=f"""
+            SELECT no,name,subject,content,TO_CHAR(regdate,'YYYY-MM-DD'),hit
+            FROM django_board
+            WHERE no={no}
+          """
+    cursor.execute(sql)
+    dd=cursor.fetchone()
+    detail_data=(dd[0],dd[1],dd[2],dd[3].read(),dd[4],dd[5])
+    cursor.close()
+    conn.close()
+    return detail_data
+
+def board_updata_data(no):
+    conn = getConnection()
+    cursor = conn.cursor()
+    sql = f"""
+                SELECT no,name,subject,content
+                FROM django_board
+                WHERE no={no}
+              """
+    cursor.execute(sql)
+    dd = cursor.fetchone()
+    update_data = (dd[0], dd[1], dd[2], dd[3].read())
+    cursor.close()
+    conn.close()
+    return update_data
+#(no,name,subject,content,pwd)
+def board_update_ok(udata):
+    conn=getConnection()
+    cursor=conn.cursor()
+    sql=f"""
+            SELECT pwd FROM django_board
+            WHERE no={udata[0]}
+          """
+    print(sql)
+    cursor.execute(sql)
+    db_pwd=cursor.fetchone()
+    print(db_pwd) #('1234',)
+    cursor.close()
+    result=False
+    if db_pwd[0]==udata[4]:
+        result=True
+        #실제 수정
+        cursor=conn.cursor()
+        sql=f"""
+                UPDATE django_board SET
+                name='{udata[1]}',subject='{udata[2]}',content='{udata[3]}'
+                WHERE no={udata[0]}
+              """
+        print(sql)
+        cursor.execute(sql)
+        conn.commit()
+        cursor.close()
+    else:
+        result=False
+    conn.close()
+    print(f"model:{result}")
+    return result
+
+def board_reply(rdata):
+    conn=getConnection()
+    cursor=conn.cursor()
+    #상위 데이터
+    sql=f"""
+            SELECT group_id , group_step,group_tab 
+            FROM django_board
+            WHERE no={rdata[0]}
+          """
+    cursor.execute(sql)
+    pvo=cursor.fetchone()
+    cursor.close()
+    # 답변 구현 =조절
+    cursor=conn.cursor()
+    sql=f"""
+            UPDATE django_board SET
+            group_step=group_step+1
+            WHERE group_id={pvo[0]} and group_step>{pvo[1]}
+          """
+    cursor.execute(sql)
+    conn.commit()
+    cursor.close()
+
+    # 실제 데이터 추가
+    cursor=conn.cursor()
+    sql=f"""
+           INSERT INTO django_board(no,name,subject,content,pwd,group_id,group_step,group_tab,root)
+           VALUES(py_no_seq.nextval,:1,:2,:3,:4,:5,:6,:7,:8)
+          """
+    data=(rdata[1],rdata[2],rdata[3],rdata[4],pvo[0],pvo[1]+1,pvo[2]+1,rdata[0])
+    cursor.execute(sql,data)
+    conn.commit()
+    cursor.close()
+
+    cursor=conn.cursor()
+    sql=f"""
+            UPDATE django_board SET
+            depth=depth+1
+            WHERE no={rdata[0]}
+          """
+    cursor.execute(sql)
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+#삭제
+def board_delete(no,pwd):
+    conn=getConnection()
+    cursor=conn.cursor()
+    #비밀번호 검색
+    sql=f"""
+            SELECT pwd,root,depth 
+            FROM django_board
+            WHERE no={no}
+          """
+    cursor.execute(sql)
+    info=cursor.fetchone()
+    cursor.close()
+    #삭제
+
+    result=False
+    if pwd==info[0] :
+        result=True
+        if info[2]==0: #답변이 없는 경우
+            cursor = conn.cursor()
+            sql=f"""
+                    DELETE FROM django_board
+                    WHERE no={no}
+                  """
+            cursor.execute(sql)
+            conn.commit()
+            cursor.close()
+        else: #답변이 있는 경우
+            cursor=conn.cursor()
+            sql=f"""
+                    UPDATE django_board SET
+                    subject='관리자가 삭제한 게시물입니다',
+                    content='관리자가 삭제한 게시물입니다'
+                    WHERE no={no}
+                  """
+            cursor.execute(sql)
+            conn.commit()
+            cursor.close()
+
+        cursor=conn.cursor()
+        sql=f"""
+               UPDATE django_board SET
+               depth=depth-1
+               WHERE no={info[1]}
+             """
+        cursor.execute(sql)
+        conn.commit()
+        cursor.close()
+    else:
+        result=False
+    #depth를 감소
+    conn.close()
+    return result
+
+
+
+
+
+
 
 
 

@@ -1,0 +1,10 @@
+{% if result %}
+   <script type="text/javascript">
+       location.href="../detail/?no={{no}}"
+   </script>
+{% else %}
+   <script type="text/javascript">
+       alert("비밀번호가 틀립니다");
+       history.back();
+   </script>
+{% endif %}

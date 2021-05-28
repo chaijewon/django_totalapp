@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style type="text/css">
+        .row {
+            margin:0px auto;
+            width:700px;
+        }
+        h1{
+             text-align:center
+        }
+    </style>
+</head>
+<body>
+     {% include 'total/menu.html' %}
+     <div style="height:30px"></div>
+     <div class="container">
+         <div class="text-center">
+           <img src="/static/board.png" width="700" height="150">
+         </div>
+         <div class="row">
+             <table class="table">
+                 <tr>
+                     <th width="20%" class="text-center success">번호</th>
+                     <td width="30%" class="text-center">{{no}}</td>
+                     <th width="20%" class="text-center success">작성일</th>
+                     <td width="30%" class="text-center">{{regdate}}</td>
+                 </tr>
+                 <tr>
+                     <th width="20%" class="text-center success">이름</th>
+                     <td width="30%" class="text-center">{{name}}</td>
+                     <th width="20%" class="text-center success">조회수</th>
+                     <td width="30%" class="text-center">{{hit}}</td>
+                 </tr>
+                 <tr>
+                     <th width="20%" class="text-center success">제목</th>
+                     <td colspan="3">{{subject}}</td>
+                 </tr>
+                 <tr>
+                     <td colspan="4" valign="top" height="200">
+                         <pre style="white-space:pre-wrap;background-color:white;border:none">{{content}}</pre>
+                     </td>
+                 </tr>
+                 <tr>
+                     <td colspan="4" class="text-right">
+                         <a href="../reply/?no={{no}}" class="btn btn-xs btn-primary">답변</a>
+                         <a href="../update/?no={{no}}" class="btn btn-xs btn-danger">수정</a>
+                         <a href="../delete/?no={{no}}" class="btn btn-xs btn-success">삭제</a>
+                         <a href="../list" class="btn btn-xs btn-info">목록</a>
+                     </td>
+                 </tr>
+             </table>
+         </div>
+     </div>
+</body>
+</html>

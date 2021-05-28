@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style type="text/css">
+        .row {
+            margin:0px auto;
+            width:900px;
+        }
+        h1{
+             text-align:center
+        }
+    </style>
+</head>
+<body>
+     {% include 'total/menu.html' %}
+     <div style="height:30px"></div>
+     <div class="container">
+         <div class="text-center">
+           <img src="/static/board.png" width="700" height="150">
+         </div>
+         <div class="row">
+             <table class="table">
+                 <tr>
+                     <td>
+                         <a href="../insert/" class="btn btn-sm btn-primary">새글</a>
+                     </td>
+                 </tr>
+             </table>
+             <table class="table">
+                 <tr class="success">
+                     <th width="10%" class="text-center">번호</th>
+                     <th width="45%" class="text-center">제목</th>
+                     <th width="15%" class="text-center">이름</th>
+                     <th width="20%" class="text-center">작성일</th>
+                     <th width="10%" class="text-center">조회수</th>
+                 </tr>
+                 {% for vo in list %}
+                 <tr>
+                     <td width="10%" class="text-center">{{vo.no}}</td>
+                     <td width="45%">
+                         {% if vo.group_tab  %}
+                            {% for i in vo.range %}
+                              &nbsp;&nbsp;
+                            {% endfor %}
+                            <img src="/static/re_icon.png">
+                         {% endif %}
+                         <a href="../detail/?no={{vo.no}}">{{vo.subject}}</a>
+                     </td>
+                     <td width="15%" class="text-center">{{vo.name}}</td>
+                     <td width="20%" class="text-center">{{vo.regdate}}</td>
+                     <td width="10%" class="text-center">{{vo.hit}}</td>
+                 </tr>
+                 {% endfor %}
+             </table>
+             <table class="table">
+                 <tr>
+                     <td class="text-center">
+                         {% if curpage > 1 %}
+                           <a href="/total/board/list/?page={{curpage|add:-1}}" class="btn btn-sm btn-danger">이전</a>
+                           &nbsp;
+                         {% endif %}
+                         {{curpage}} page / {{totalpage}} pages
+                         {% if curpage < totalpage %}
+                             &nbsp;
+                            <a href="/total/board/list/?page={{curpage|add:1}}" class="btn btn-sm btn-danger">다음</a>
+                         {% endif %}
+                     </td>
+                 </tr>
+             </table>
+         </div>
+     </div>
+</body>
+</html>
+
+
+
+
+
+
+
+

@@ -1,5 +1,9 @@
 from django.shortcuts import render,redirect
 from totalapp import models
+from urllib import parse
+# 인코딩
+import urllib.request as req
+from bs4 import BeautifulSoup
 # Create your views here.
 def home(request):
     try:
@@ -188,7 +192,11 @@ def food_detail(request):
       # poster,title,score,address,tel,type,price,parking,time,menu,good,soso,bad
       posters=detail_data[0].split("^")
       print(posters)
-      menu=detail_data[9].split("원")
+      menu=''
+      if detail_data[9]:
+        menu=detail_data[9].split("원")
+      else :
+        menu='none'
       address=detail_data[3].split("지")
       dd={
                "poster":posters,
@@ -206,6 +214,134 @@ def food_detail(request):
                "bad":detail_data[12]
            }
       return render(request,'total/food_detail.html',dd)
+'''
+<title>하정우부터 황정민까지…넷플릭스 新시리즈 '수리남', 라인업 공개 [공식]</title>
+<link>http://www.mydaily.co.kr/new_yk/html/read.php?newsid=202105280902799097&ext=na&utm_campaign=naver_news&utm_source=naver&utm_medium=related_news</link>
+<description>
+<![CDATA[ 드라마 '슬기로운 감빵생활', 영화 '양자물리학', 넷플릭스 '사냥의 시간', 하반기 공개 예정인 '오징어 게임'과... 개봉 예정인 영화 '발신제한'을 비롯해 영화 '봉오동 전투', '돈', '국가부도의 날', 드라마 '미스터 션샤인', '도깨비... ]]>
+</description>
+<pubDate>Fri, 28 May 2021 09:12:00 +0900</pubDate>
+<author>마이데일리</author>
+<category>연예</category>
+<media:thumbnail url="https://imgnews.pstatic.net/image/thumb140/117/2021/05/28/3500662.jpg"/>
+'''
+def newsData(request):
+    try:
+         fd=request.POST['fd']
+    except Exception as e:
+         fd="영화"
+    #인코딩
+    fd=parse.quote(fd)
+    url=f"http://newssearch.naver.com/search.naver?where=rss&query={fd}"
+    result=req.urlopen(url)
+    soup=BeautifulSoup(result,'html.parser')
+    news_data=[]
+    for item in soup.find_all("item"):
+      pos=''
+      try:
+            title=item.find('title').string
+            desc=item.find('description').string
+            author=item.find('author').string
+            category=item.find('category').string
+            pos=item.find('media:thumbnail')
+            poster=pos.get('url')
+            print(title)
+            print(desc)
+            print(author)
+            print(category)
+            print(pos.get('url'))
+            print('=================================================')
+            data={"title":title,"desc":desc,"author":author,"category":category,"poster":poster}
+            news_data.append(data)
+      except Exception as e:
+            pos='none'
+
+    return render(request,'total/news.html',{"nd":news_data})
+
+#답변형 게시판 관련
+def board_list(request):
+    try:
+          page=request.GET['page']
+          curpage=int(page)
+    except Exception as e:
+          curpage=1
+    board_all_data=models.board_list(curpage)
+    totalpage=models.board_totalpage()
+    bd=[]
+    for row in board_all_data:
+        r=range(1,row[5]+1)
+        print(r,row[5])
+        data={"no":row[0],"subject":row[1],"name":row[2],"regdate":row[3],"hit":row[4],"range":r,"group_tab":row[5]}
+        bd.append(data)
+    return render(request,'total/board/list.html',{"curpage":curpage,"totalpage":totalpage,"list":bd})
+
+def board_insert(request):
+    return render(request,'total/board/insert.html')
+def board_insert_ok(request):
+    name=request.POST['name']
+    subject=request.POST['subject']
+    content=request.POST['content']
+    pwd=request.POST['pwd']
+    data=(name,subject,content,pwd)
+    #DB연동
+    models.board_insert(data)
+    return redirect('/total/board/list/') #sendRedirect
+
+# 배열 []=list => 이름부여  Object {}=dict (Map) 그냥
+def board_detail(request):
+    #no,name,subject,content,TO_CHAR(regdate,'YYYY-MM-DD'),hit
+    no=request.GET['no'] #request.getParameter("no")
+    detail_data=models.board_detail(int(no))
+    dd={"no":detail_data[0],"name":detail_data[1],"subject":detail_data[2],"content":detail_data[3],"regdate":detail_data[4],"hit":detail_data[5]}
+    return render(request,'total/board/detail.html',dd) #forward {"dd",dd}  dd
+
+#수정 , 삭제 , 답변
+def board_update_data(request):
+    no=request.GET['no']
+    u_data=models.board_updata_data(int(no))
+    #no,name,subject,content
+    ud={"no":u_data[0],"name":u_data[1],"subject":u_data[2],"content":u_data[3]}
+    return render(request,'total/board/update.html',ud)
+def board_update_ok(request):
+    name=request.POST['name']
+    subject=request.POST['subject']
+    content=request.POST['content']
+    pwd=request.POST['pwd']
+    no=request.POST['no']
+    udata=(no,name,subject,content,pwd)
+    #데이터베이스 연동 결과값 => html
+    result=models.board_update_ok(udata)
+    print(f"result={result}")
+    return render(request,'total/board/update_ok.html',{"result":result,"no":no})
+
+#답변
+def board_reply(request):
+    no=request.GET['no']
+    return render(request,'total/board/reply.html',{"no":no})
+
+def board_reply_ok(request):
+    pno=request.POST['pno']
+    name = request.POST['name']
+    subject = request.POST['subject']
+    content = request.POST['content']
+    pwd = request.POST['pwd']
+    rdata=(pno,name,subject,content,pwd)
+    #models연결 => 오라클 연결 => 추가
+    models.board_reply(rdata)
+    return redirect("/total/board/list/")
+
+def board_delete(request):
+     no=request.GET['no']
+     return render(request,'total/board/delete.html',{"no":no})
+
+def board_delete_ok(request):
+     no=request.POST['no']
+     pwd=request.POST['pwd']
+     #데이터베이스로 전송
+     result=models.board_delete(int(no),pwd)
+     return render(request,'total/board/delete_ok.html',{"result":result})
+
+
 
 
 
